@@ -1,4 +1,4 @@
-from flask import Flask, redirect
+from flask import Flask, redirect, render_template, request
 import json
 import datetime
 
@@ -12,8 +12,14 @@ app = Flask(__name__)
 
 @app.route("/")
 def homepage():
-    return('Go to /account_name to view their metadata webpage')
-
+    return(render_template('index.html'))
+    
+@app.route('/submit_form', methods = ['POST'])
+def get_account_form():
+    account_name = request.form['Account Name']
+   
+    return(redirect('/' + account_name))
+    
 @app.route("/<account_name>")  
 def determine_quick_user_index(account_name):  
     rpc = SteemNodeRPC("wss://steemit.com/wspa")
@@ -21,7 +27,7 @@ def determine_quick_user_index(account_name):
     #rpc = SteemNodeRPC("ws://localhost:8090")
     post_payouts, post_votes, post_titles, post_links = author_rewards_quick(rpc, account_name)
     
-    sp_payouts = rewards_conversion(rpc, post_payouts)
+    sp_payouts = rewards_conversion(post_payouts)
     
     h_index = 0
     for pos, val in enumerate(sp_payouts):
@@ -39,7 +45,29 @@ def determine_quick_user_index(account_name):
             
     publish_date = str(datetime.date.today())
      
-    return('V-index (reward value): ' + str(h_index) + '<br>P-index (popular votes): ' + str(h2_index) + '<hr>Most popular post: <a href=\"http://steemit.com' + post_links[0] + '\">' + post_titles[0] + '</a>, at a value of ' + str(sp_payouts[0]) + ' Steem Power.')    
+    # return('V-index (reward value): ' + str(h_index) + '<br>P-index (popular votes): ' + str(h2_index) + '<hr>Most popular post: <a href=\"http://steemit.com' + post_links[0] + '\">' + post_titles[0] + '</a>, at a value of ' + str(sp_payouts[0]) + ' Steem Power.')    
+    
+    body = 'V-index (reward value): ' + str(h_index) + '<br>P-index (popular votes): ' + str(h2_index)
+    post_list = generate_table(sp_payouts, post_votes, post_titles, post_links)
+    
+    return render_template('index.html', name=account_name, body=body, post_list=post_list);
+
+    
+def generate_table(post_payouts, post_votes, post_titles, post_links):
+    output = ""
+    for pos, val in enumerate(post_payouts):
+        val = "{0:.2f}".format(val)
+        if pos%2:
+            output = output + ('<tr class="pure-table-odd"><td><b>' + str(pos+1) + '</bold></td><td><a href=\"http://steemit.com' + post_links[pos] + '\">' + post_titles[pos] + '</a></td><td>' + str(val) + ' STEEM POWER</td><td>' + str(post_votes[pos]) + '</td></tr>')
+        else:
+            output = output + ('<tr><td><b>' + str(pos+1) + '</b></td><td><a href=\"http://steemit.com' + post_links[pos] + '\">' + post_titles[pos] + '</a></td><td>' + str(val) + ' STEEM POWER</td><td>' + str(post_votes[pos]) + '</td></tr>')
+   
+    return output
+    
+    
+@app.route("/full/")
+def full_load():
+    return("Go to /full/<username> to view the full history h-index for an account");
     
 @app.route("/full/<account_name>")
 def determine_user_index(account_name):
@@ -83,7 +111,7 @@ def vest_conversion(rpc, post_payouts):
     return sp_payouts
 
     
-def rewards_conversion(rpc, post_payouts):
+def rewards_conversion(post_payouts):
     sp_conversion = 1./1875
     
     sp_payouts = [sp_conversion * post_reward for post_reward in post_payouts]
@@ -106,10 +134,11 @@ def author_rewards_quick(rpc, account_name):
         post_links.append(author_state['content'][post_titles[-1]]['url'])
         print(post_links[-1] + ' - found ' + account_name + '\'s post: #' + str(curr_post) + '!')
     
-    zipped = zip(post_payout, post_titles, post_links)
-    zipped = sorted(zipped, reverse=True)
+    if len(post_payout) > 0:
+        zipped = zip(post_payout, post_titles, post_links)
+        zipped = sorted(zipped, reverse=True)
     
-    post_payout, post_titles, post_links = zip(*zipped)
+        post_payout, post_titles, post_links = zip(*zipped)
     
     return(post_payout, post_votes, post_titles, post_links)
     

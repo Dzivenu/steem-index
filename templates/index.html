@@ -1,0 +1,100 @@
+<!DOCTYPE html><html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Steemit H-index Estimator</title>	
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    
+    <!--[if lte IE 8]>
+      
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
+      
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+      
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
+      
+    <!--<![endif]-->
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    
+    <link     href='http://fonts.googleapis.com/css?family=Sintony:400,700'     rel='stylesheet' type='text/css'>
+
+    <style type="text/css">  
+    
+      body
+      {
+        background:
+            /* top, transparent black, faked with gradient */ 
+            linear-gradient(
+              rgba(120, 120, 0, 0.4), 
+              rgba(120, 120, 0, 0.5)
+                ),
+            /* bottom, image */
+            url(https://img1.steemit.com/0x0/http://tinyimg.io/i/65Q7Njc.png);
+            background-repeat:repeat;
+            background-position: -50% 0%; 
+        
+      }
+
+     
+     
+    </style>
+
+  </head>  
+
+  <body>
+    <div class="splash-container">
+        <div class="splash">
+          <center>
+          <br>
+          <h1 class="splash-head">Steemit H-index Estimator</h1>
+          <p class="splash-subhead">Made by <a href='https://steemit.com/@geoffrey'>@geoffrey</a></h2>
+
+        
+            {% if body %}
+            <h3>{{body|safe}}</h3>
+            {% else %}
+            <h3><p>Type an Account name and click the button</p><p>This will tell you the h-index for that account</p></h3>
+            {% endif %}
+            
+            <form action="/submit_form" class="pure-form" method="post">
+                <input type="text" name="Account Name" placeholder="Account Name" value="{{name}}"><span style="display:inline-block; width: 10px;"></span></input>
+                
+                
+                <input class="pure-button" type="submit" value="Calculate H-index"></input>
+            </form>
+            
+            <br>
+            </center>
+        </div>
+    </div>
+		<br><br><br>
+        
+    <div class="content-wrapper">
+        <div class="content">
+
+                {% if post_list %}
+                <h2 class="content-head is-center">Top Posts:</h2>
+                <table class="pure-table">
+                    <thead>
+                        <tr>
+                            <th>Post Rank</th>
+                            <th>Post Title</th>
+                            <th>Post Reward</th>
+                            <th>Post Votes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{post_list|safe}}
+                    </tbody>
+                </table>
+                {% endif %}
+        </div>
+    </div>
+	<br><br>
+	<p align="right">Contact me on <a href="https://steemit.chat">Steemit.chat</a> or donate BTC: <a href="https://blockchain.info/address/14WJdeNwzkH23kEGfDGAPLQx2CdfxDHFpw">14WJdeNwzkH23kEGfDGAPLQx2CdfxDHFpw</a></p>
+	<p align="right">Background: <a href="https://steemit.com/steem/@team/steem-word-cloud">Steem word cloud</a></p>
+	<p align="right">View source: <a href="https://github.com/geoffrey-steem/steem-index">github/geoffrey-steem/steemit-index</a></p>
+  </body>
+</html>
