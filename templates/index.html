@@ -22,8 +22,7 @@
 
     <style type="text/css">  
     
-      body
-      {
+    body{
         background:
             /* top, transparent black, faked with gradient */ 
             linear-gradient(
@@ -33,68 +32,101 @@
             /* bottom, image */
             url(https://img1.steemit.com/0x0/http://tinyimg.io/i/65Q7Njc.png);
             background-repeat:repeat;
-            background-position: -50% 0%; 
+            background-position: 70% 0%; 
+       
+        margin:0;
+        padding:0;
+        height:100%;
+        width:100%;
+    } 
         
-      }
+        
 
+    .header{
+        height: 270px;
+        background-color: lightyellow;
+        width: 450px;
+        border:1px solid black;
+     }
      
+     .mainbody{
      
+        background-color: lightyellow;
+        border:1px solid black;
+        margin:0px;
+        padding:5px;
+    }
+     
+    .footer{
+        float: right;
+        background-color: lightblue;
+        border:1px solid black;
+    }
     </style>
 
   </head>  
 
   <body>
-    <div class="splash-container">
-        <div class="splash">
-          <center>
-          <br>
-          <h1 class="splash-head">Steemit H-index Estimator</h1>
-          <p class="splash-subhead">Made by <a href='https://steemit.com/@geoffrey'>@geoffrey</a></h2>
+        <br><br><br>
+        <center>
+            <div class="header">
+                <div class="splash-container">
+                    <div class="splash">
+                      <br>
+                      <h1 class="splash-head">Steemit H-index Estimator</h1>
+                      <p class="splash-subhead">Made by <a href='https://steemit.com/@geoffrey'>@geoffrey</a></h2>
 
-        
-            {% if body %}
-            <h3>{{body|safe}}</h3>
-            {% else %}
-            <h3><p>Type an Account name and click the button</p><p>This will tell you the h-index for that account</p></h3>
-            {% endif %}
+                    
+                        {% if body %}
+                        <h3>{{body|safe}}</h3>
+                        {% else %}
+                        <h3><p>Type an Account name and click the button</p><p>This will tell you the H-index for that account</p></h3>
+                        {% endif %}
+                        
+                        <form action="/submit_form" class="pure-form" method="post">
+                            <input type="text" name="Account Name" placeholder="Account Name" value="{{name}}"><span style="display:inline-block; width: 10px;"></span></input>
+                            
+                            
+                            <input class="pure-button" type="submit" value="Calculate H-index"></input>
+                        </form>
+                        
+                        <br>
+                        </div>
+                    </div>
+            </div>
+        </center>
             
-            <form action="/submit_form" class="pure-form" method="post">
-                <input type="text" name="Account Name" placeholder="Account Name" value="{{name}}"><span style="display:inline-block; width: 10px;"></span></input>
-                
-                
-                <input class="pure-button" type="submit" value="Calculate H-index"></input>
-            </form>
-            
-            <br>
-            </center>
+        <br><br><br>
+                        {% if post_list %}
+        <div class="mainbody">
+            <div class="content-wrapper">
+                <div class="content">
+                    <center>
+                        <h2>Top Posts:</h2>
+                        <table class="pure-table">
+                            <thead>
+                                <tr>
+                                    <th>Post Rank</th>
+                                    <th>Post Title</th>
+                                    <th>Post Reward</th>
+                                    <th>Post Votes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{post_list|safe}}
+                            </tbody>
+                        </table>
+                        <br><br>
+                    </center>
+                </div>
+            </div>
         </div>
-    </div>
-		<br><br><br>
-        
-    <div class="content-wrapper">
-        <div class="content">
-
-                {% if post_list %}
-                <h2 class="content-head is-center">Top Posts:</h2>
-                <table class="pure-table">
-                    <thead>
-                        <tr>
-                            <th>Post Rank</th>
-                            <th>Post Title</th>
-                            <th>Post Reward</th>
-                            <th>Post Votes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{post_list|safe}}
-                    </tbody>
-                </table>
-                {% endif %}
+                        {% endif %}
+        <br><br>
+        <div class="footer">
+            <p align="right">Contact me on <a href="https://steemit.chat">Steemit.chat</a> or donate BTC: <a href="https://blockchain.info/address/14WJdeNwzkH23kEGfDGAPLQx2CdfxDHFpw">14WJdeNwzkH23kEGfDGAPLQx2CdfxDHFpw</a></p>
+            <p align="right">Background: <a href="https://steemit.com/steem/@team/steem-word-cloud">Steem word cloud</a></p>
+            <p align="right">View source: <a href="https://github.com/geoffrey-steem/steem-index">github/geoffrey-steem/steemit-index</a></p>
         </div>
-    </div>
-	<br><br>
-	<p align="right">Contact me on <a href="https://steemit.chat">Steemit.chat</a> or donate BTC: <a href="https://blockchain.info/address/14WJdeNwzkH23kEGfDGAPLQx2CdfxDHFpw">14WJdeNwzkH23kEGfDGAPLQx2CdfxDHFpw</a></p>
-	<p align="right">Background: <a href="https://steemit.com/steem/@team/steem-word-cloud">Steem word cloud</a></p>
-	<p align="right">View source: <a href="https://github.com/geoffrey-steem/steem-index">github/geoffrey-steem/steemit-index</a></p>
-  </body>
+    </body>
 </html>
