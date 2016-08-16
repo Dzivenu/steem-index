@@ -62,6 +62,9 @@ def determine_quick_user_index(account_name):
     body = 'V-index (reward value): ' + str(h_index) + '<br><br>P-index (popular votes): ' + str(h2_index)
     post_list = generate_table(sp_payouts, post_votes, post_titles, post_links)
     
+    if post_list == "":
+        return render_template('index.html', name=account_name, body=('<h1>Something went wrong.  Perhaps ' + account_name + ' has never posted?</h1>'))
+        
     return render_template('index.html', name=account_name, body=body, post_list=post_list);
 
     
@@ -82,31 +85,32 @@ def determine_user_index(account_name):
     #rpc = SteemNodeRPC("wss://steemit.com/wspa")
     
     try:
-        [h_index, post_titles, sp_payouts] = hindex_dict[account_name][str(datetime.date.today())]
-        publish_date = str(datetime.date.today())
+        try:
+            [h_index, post_titles, sp_payouts] = hindex_dict[account_name][str(datetime.date.today())]
+            publish_date = str(datetime.date.today())
+        except:
+            print('Could not find in dictionary: ' + account_name + ', on: ' + str(datetime.date.today()))
+            rpc = SteemNodeRPC("ws://localhost:8090")
+            post_payouts, post_titles = author_rewards(rpc, account_name)
+            
+            sp_payouts = vest_conversion(rpc, post_payouts)
+            
+            h_index = 0
+            for pos, val in enumerate(sp_payouts):
+                if val > pos:
+                    h_index = pos + 1
+                else:
+                    break
+                    
+            publish_date = str(datetime.date.today())
+            
+            if account_name not in hindex_dict:
+                hindex_dict[account_name] = {}
+            hindex_dict[account_name][publish_date] = [h_index, post_titles, sp_payouts]
+            with open('hindex_dict.dat','w') as f:
+                f.write(str(hindex_dict))
     except:
-        print('Could not find in dictionary: ' + account_name + ', on: ' + str(datetime.date.today()))
-        rpc = SteemNodeRPC("ws://localhost:8090")
-        post_payouts, post_titles = author_rewards(rpc, account_name)
-        
-        sp_payouts = vest_conversion(rpc, post_payouts)
-        
-        h_index = 0
-        for pos, val in enumerate(sp_payouts):
-            if val > pos:
-                h_index = pos + 1
-            else:
-                break
-                
-        publish_date = str(datetime.date.today())
-        
-        if account_name not in hindex_dict:
-            hindex_dict[account_name] = {}
-        hindex_dict[account_name][publish_date] = [h_index, post_titles, sp_payouts]
-        with open('hindex_dict.dat','w') as f:
-            f.write(str(hindex_dict))
-     
-     
+        return render_template('index.html', name=account_name, body=('<h1>Something went wrong.  Perhaps ' + account_name + ' has never posted?</h1>'))
     #return('H-index: ' + str(h_index) + '<br>Most popular post: ' + post_titles[0] + ', at a value of ' + str(sp_payouts[0]) + ' Steem Power.' + '<br><br>(Cached on ' + publish_date + ')')
     
     
@@ -136,7 +140,6 @@ def rewards_conversion(post_payouts):
     
 def author_rewards_quick(rpc, account_name):
 
-    #try:
     last_tx, curr_tx, curr_post = -1, -1, 0
     post_votes, account_block, post_titles, post_payout, post_links = [], [], [], [], []
     
@@ -157,8 +160,6 @@ def author_rewards_quick(rpc, account_name):
     
     return(post_payout, post_votes, post_titles, post_links)
     
-    #except:
-        #return('Something went wrong.  Perhaps ' + account_name + ' hasn\'t set their url metadata?')
 
 
 def author_rewards(rpc, account_name):
