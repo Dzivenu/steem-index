@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Steemit H-index Estimator</title>	
+    <title>Steemit H-Index Estimator</title>	
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
@@ -43,7 +43,7 @@
         
 
     .header{
-        height: 320px;
+        height: 380px;
         background-color: lightyellow;
         width: 450px;
         border:1px solid black;
@@ -61,6 +61,7 @@
         float: right;
         background-color: lightblue;
         border:1px solid black;
+        padding:10px;
     }
     </style>
 
@@ -73,14 +74,15 @@
                 <div class="splash-container">
                     <div class="splash">
                       <br>
-                      <h1 class="splash-head">Steemit H-index Estimator</h1>
+                      <h1 class="splash-head">Steemit H-Index Calculator</h1>
+                      <p class="splash-subhead"><a href="https://steemit.com/steemit/@geoffrey/announcing-steem-index-determine-how-consistently-popular-your-writing-is">How does this work? (Announcement thread)</a></p>
                       <p class="splash-subhead">Made by <a href='https://steemit.com/@geoffrey'>@geoffrey</a></h2>
 
                     
                         {% if body %}
                         <h3>{{body|safe}}</h3>
                         {% else %}
-                        <h3><p>Type an Account name and click the button</p><p>This will tell you the H-index for that account</p></h3>
+                        <h3><p>This app finds an H-index like measure for a specified account</p></h3>
                         {% endif %}
                         
                         <form action="/submit_form" class="pure-form" method="post">
