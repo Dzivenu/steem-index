@@ -43,14 +43,14 @@ def determine_quick_user_index(account_name):
     
     h_index = 0
     for pos, val in enumerate(sp_payouts):
-        if val > pos:
+        if val > pos + 1:
             h_index = pos + 1
         else:
             break
             
     h2_index = 0
     for pos, val in enumerate(sorted(post_votes,reverse=True)):
-        if val > pos:
+        if val > pos + 1:
             h2_index = pos + 1
         else:
             break
@@ -63,7 +63,7 @@ def determine_quick_user_index(account_name):
     post_list = generate_table(sp_payouts, post_votes, post_titles, post_links)
     
     if post_list == "":
-        return render_template('index.html', name=account_name, body=('<h1>Something went wrong.  Perhaps ' + account_name + ' has never posted?</h1>'))
+        return render_template('index.html', name=account_name, body=('<h1>Something went wrong.  Has ' + account_name + ' ever posted?</h1>'))
         
     return render_template('index.html', name=account_name, body=body, post_list=post_list);
 
@@ -97,7 +97,7 @@ def determine_user_index(account_name):
             
             h_index = 0
             for pos, val in enumerate(sp_payouts):
-                if val > pos:
+                if val > pos + 1:
                     h_index = pos + 1
                 else:
                     break
@@ -110,7 +110,7 @@ def determine_user_index(account_name):
             with open('hindex_dict.dat','w') as f:
                 f.write(str(hindex_dict))
     except:
-        return render_template('index.html', name=account_name, body=('<h1>Something went wrong.  Perhaps ' + account_name + ' has never posted?</h1>'))
+        return render_template('index.html', name=account_name, body=('<h1>Something went wrong.  Has ' + account_name + ' ever posted?</h1>'))
     #return('H-index: ' + str(h_index) + '<br>Most popular post: ' + post_titles[0] + ', at a value of ' + str(sp_payouts[0]) + ' Steem Power.' + '<br><br>(Cached on ' + publish_date + ')')
     
     
