@@ -14,11 +14,23 @@ app = Flask(__name__)
 def homepage():
     return(render_template('index.html'))
     
+@app.route("/full/")
+def full_load():
+    return(render_template('index.html'))
+    
 @app.route('/submit_form', methods = ['POST'])
 def get_account_form():
     account_name = request.form['Account Name']
    
     return(redirect('/' + account_name))
+    
+    
+@app.route('/submit_form_full', methods = ['POST'])
+def get_account_form_full():
+    account_name = request.form['Account Name Full']
+   
+    return(redirect('/full/' + account_name))
+    
     
 @app.route("/<account_name>")  
 def determine_quick_user_index(account_name):  
@@ -47,7 +59,7 @@ def determine_quick_user_index(account_name):
      
     # return('V-index (reward value): ' + str(h_index) + '<br>P-index (popular votes): ' + str(h2_index) + '<hr>Most popular post: <a href=\"http://steemit.com' + post_links[0] + '\">' + post_titles[0] + '</a>, at a value of ' + str(sp_payouts[0]) + ' Steem Power.')    
     
-    body = 'V-index (reward value): ' + str(h_index) + '<br>P-index (popular votes): ' + str(h2_index)
+    body = 'V-index (reward value): ' + str(h_index) + '<br><br>P-index (popular votes): ' + str(h2_index)
     post_list = generate_table(sp_payouts, post_votes, post_titles, post_links)
     
     return render_template('index.html', name=account_name, body=body, post_list=post_list);
@@ -64,10 +76,6 @@ def generate_table(post_payouts, post_votes, post_titles, post_links):
    
     return output
     
-    
-@app.route("/full/")
-def full_load():
-    return("Go to /full/<username> to view the full history h-index for an account");
     
 @app.route("/full/<account_name>")
 def determine_user_index(account_name):
@@ -98,7 +106,13 @@ def determine_user_index(account_name):
             f.write(str(hindex_dict))
      
      
-    return('H-index: ' + str(h_index) + '<br>Most popular post: ' + post_titles[0] + ', at a value of ' + str(sp_payouts[0]) + ' Steem Power.' + '<br><br>(Cached on ' + publish_date + ')')
+    #return('H-index: ' + str(h_index) + '<br>Most popular post: ' + post_titles[0] + ', at a value of ' + str(sp_payouts[0]) + ' Steem Power.' + '<br><br>(Cached on ' + publish_date + ')')
+    
+    
+    body = 'V-index (reward value): ' + str(h_index)
+    post_list = generate_table(sp_payouts, ['Unknown']*len(sp_payouts), post_titles, post_links=['/@' + account_name + '/' + p for p in post_titles])
+    
+    return render_template('index.html', name=account_name, body=body, post_list=post_list);
     
     
 def vest_conversion(rpc, post_payouts):

@@ -43,7 +43,7 @@
         
 
     .header{
-        height: 270px;
+        height: 320px;
         background-color: lightyellow;
         width: 450px;
         border:1px solid black;
@@ -84,10 +84,16 @@
                         {% endif %}
                         
                         <form action="/submit_form" class="pure-form" method="post">
-                            <input type="text" name="Account Name" placeholder="Account Name" value="{{name}}"><span style="display:inline-block; width: 10px;"></span></input>
-                            
-                            
-                            <input class="pure-button" type="submit" value="Calculate H-index"></input>
+                            <fieldset>
+                                <input type="text" name="Account Name" placeholder="Account Name" value="{{name}}"><span style="display:inline-block; width: 10px;"></span></input>
+                                <input class="pure-button" type="submit" value="Calculate 30-day H-index"></input>
+                            </fieldset>
+                        </form>
+                        <form action="/submit_form_full" class="pure-form" method="post">
+                            <fieldset>
+                                <input type="text" name="Account Name Full" placeholder="Account Name" value="{{name}}"><span style="display:inline-block; width: 10px;"></span></input>
+                                <input class="pure-button" type="submit" value="Calculate Fuller H-index"></input>
+                            </fieldset>
                         </form>
                         
                         <br>
