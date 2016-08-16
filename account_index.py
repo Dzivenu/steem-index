@@ -85,6 +85,7 @@ def determine_user_index(account_name):
         [h_index, post_titles, sp_payouts] = hindex_dict[account_name][str(datetime.date.today())]
         publish_date = str(datetime.date.today())
     except:
+        print('Could not find in dictionary: ' + account_name + ', on: ' + str(datetime.date.today()))
         rpc = SteemNodeRPC("ws://localhost:8090")
         post_payouts, post_titles = author_rewards(rpc, account_name)
         
